@@ -18,7 +18,7 @@ func GetWallet(pathToPrivKey string) solana.Wallet {
 	return wallet
 }
 
-func GetBalanceInSol(pubKey solana.PublicKey, rpcClient *rpc.Client) uint64 {
+func GetSolBalance(pubKey solana.PublicKey, rpcClient *rpc.Client) uint64 {
 	balance, err := rpcClient.GetBalance(
 		context.TODO(),
 		pubKey,
