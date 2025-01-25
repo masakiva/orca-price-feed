@@ -11,5 +11,5 @@ func main() {
 	wallet := utils.GetWallet("./devnet-wallet.json")
 
 	balance := utils.GetBalanceInSol(wallet.PublicKey(), rpcClient)
-	fmt.Println("accountFrom's balance:", balance, "SOL")
+	fmt.Println("wallet's balance:", balance, "SOL")
 }
