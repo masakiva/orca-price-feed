@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/gagliardetto/solana-go/rpc"
 )
 
-func getRpcClient() *rpc.Client {
+func GetRpcClient() *rpc.Client {
 	endpointUrl := os.Getenv("RPC_URL")
 	if endpointUrl != "" {
 		_, err := url.ParseRequestURI(endpointUrl)

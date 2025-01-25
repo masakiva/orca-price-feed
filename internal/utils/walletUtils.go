@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"github.com/gagliardetto/solana-go/rpc"
 )
 
-func getWallet(pathToPrivKey string) solana.Wallet {
+func GetWallet(pathToPrivKey string) solana.Wallet {
 	var wallet solana.Wallet
 	var err error
 
@@ -18,7 +18,7 @@ func getWallet(pathToPrivKey string) solana.Wallet {
 	return wallet
 }
 
-func getBalanceInSol(pubKey solana.PublicKey, rpcClient *rpc.Client) uint64 {
+func GetBalanceInSol(pubKey solana.PublicKey, rpcClient *rpc.Client) uint64 {
 	balance, err := rpcClient.GetBalance(
 		context.TODO(),
 		pubKey,
