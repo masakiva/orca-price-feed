@@ -6,3 +6,8 @@
 
     ```sh
     go run cmd/orca-price-feed/main.go
+    ```
+    or with a custom RPC URL:
+    ```sh
+    RPC_URL=http://127.0.0.1:8899 go run cmd/orca-price-feed/main.go
+    ```
