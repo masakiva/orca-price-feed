@@ -1,7 +1,9 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"log"
 
 	"github.com/Norbaeocystin/gorca"
 	"github.com/gagliardetto/solana-go"
@@ -9,21 +11,29 @@ import (
 )
 
 func main() {
+	ctx := context.Background()
 	rpcClient := utils.GetRpcClient()
 	// wallet := utils.GetWallet("./devnet-wallet.json")
 
 	// Orca's SOL/USDC pool address
-	whirlpoolAddress := solana.MustPublicKeyFromBase58("Czfq3xZZDmsdGdUyrNLtRhGc47cXcZtLG4crryfu44zE") // TODO: handle errors properly using PublicKeyFromBase58() instead
-	balance := utils.GetSolBalance(whirlpoolAddress, rpcClient)
+	whirlpoolAddress, err := solana.PublicKeyFromBase58("Czfq3xZZDmsdGdUyrNLtRhGc47cXcZtLG4crryfu44zE")
+	if err != nil {
+		log.Fatalf("failed to parse whirlpool address: %v", err)
+	}
+
+	balance := utils.GetSolBalance(ctx, whirlpoolAddress, rpcClient)
 	fmt.Println("whirlpool's balance:", balance, "SOL")
 
 	whirlpoolData := gorca.GetWhirlpoolData(rpcClient, whirlpoolAddress)
+
 	vaultABalance := utils.GetPrettyTokenAccountBalance(
+		ctx,
 		*whirlpoolData.TokenVaultA,
 		*whirlpoolData.TokenMintA,
 		rpcClient,
 	)
 	vaultBBalance := utils.GetPrettyTokenAccountBalance(
+		ctx,
 		*whirlpoolData.TokenVaultB,
 		*whirlpoolData.TokenMintB,
 		rpcClient,
