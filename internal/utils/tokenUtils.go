@@ -12,25 +12,10 @@ import (
 	"github.com/gagliardetto/solana-go/rpc"
 )
 
-// GetPrettyTokenAccountBalance returns the formatted balance of a token account,
-// with its symbol.
-func GetPrettyTokenAccountBalance(ctx context.Context, tokenAccountPubKey solana.PublicKey, tokenMintPubKey solana.PublicKey, rpcClient *rpc.Client) string {
-	rawAmount, tokenDecimals := fetchTokenAccountBalance(ctx, tokenAccountPubKey, rpcClient)
-	amountFloat, err := strconv.ParseFloat(rawAmount, 64)
-	if err != nil {
-		log.Fatalf("failed to parse token account balance: %v", err)
-	}
-	amountFloat /= math.Pow(10, float64(tokenDecimals))
-
-	tokenSymbol := fetchTokenSymbol(ctx, tokenMintPubKey, rpcClient)
-
-	prettyBalance := fmt.Sprintf("%.6f %s", amountFloat, tokenSymbol)
-	return prettyBalance
-}
-
-// fetchTokenAccountBalance retrieves the balance and decimals of a token account.
-func fetchTokenAccountBalance(ctx context.Context, tokenAccountPubKey solana.PublicKey, rpcClient *rpc.Client) (string, uint8) {
-	balance, err := rpcClient.GetTokenAccountBalance(
+// GetTokenAccountBalance retrieves and returns the balance of a specified
+// token account in its respective unit.
+func GetTokenAccountBalance(ctx context.Context, tokenAccountPubKey solana.PublicKey, rpcClient *rpc.Client) float64 {
+	balanceInfo, err := rpcClient.GetTokenAccountBalance(
 		ctx,
 		tokenAccountPubKey,
 		rpc.CommitmentFinalized,
@@ -38,10 +23,15 @@ func fetchTokenAccountBalance(ctx context.Context, tokenAccountPubKey solana.Pub
 	if err != nil {
 		log.Fatalf("failed to get token account balance: %v", err)
 	}
-	return balance.Value.Amount, balance.Value.Decimals
+	balanceFloat, err := strconv.ParseFloat(balanceInfo.Value.Amount, 64)
+	if err != nil {
+		log.Fatalf("failed to parse token account balance: %v", err)
+	}
+	balanceFloat /= math.Pow(10, float64(balanceInfo.Value.Decimals))
+	return balanceFloat
 }
 
-func fetchTokenSymbol(ctx context.Context, tokenMintPubKey solana.PublicKey, rpcClient *rpc.Client) string {
+func GetTokenSymbol(ctx context.Context, tokenMintPubKey solana.PublicKey, rpcClient *rpc.Client) string {
 	metadata, err := fetchTokenMetadata(ctx, tokenMintPubKey, rpcClient)
 	if err != nil {
 		log.Fatalf("failed to get token symbol: %v", err)

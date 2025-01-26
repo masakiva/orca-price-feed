@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/Norbaeocystin/gorca"
 	"github.com/gagliardetto/solana-go"
 	"github.com/masakiva/orca-price-feed/internal/utils"
 )
@@ -23,20 +22,6 @@ func main() {
 		log.Fatalf("failed to parse whirlpool address: %v", err)
 	}
 
-	whirlpoolData := gorca.GetWhirlpoolData(rpcClient, whirlpoolAddress)
-
-	vaultABalance := utils.GetPrettyTokenAccountBalance(
-		ctx,
-		*whirlpoolData.TokenVaultA,
-		*whirlpoolData.TokenMintA,
-		rpcClient,
-	)
-	vaultBBalance := utils.GetPrettyTokenAccountBalance(
-		ctx,
-		*whirlpoolData.TokenVaultB,
-		*whirlpoolData.TokenMintB,
-		rpcClient,
-	)
-	fmt.Println("Token Vault A balance:", vaultABalance)
-	fmt.Println("Token Vault B balance:", vaultBBalance)
+	whirlpoolPrice := utils.GetWhirlpoolCurrentPrice(ctx, whirlpoolAddress, rpcClient)
+	fmt.Printf("Whirlpool price: %f\n", whirlpoolPrice)
 }
