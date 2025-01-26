@@ -14,15 +14,14 @@ func main() {
 	ctx := context.Background()
 	rpcClient := utils.GetRpcClient()
 	// wallet := utils.GetWallet("./devnet-wallet.json")
+	// balance := utils.GetSolBalance(ctx, wallet.PublicKey(), rpcClient)
 
 	// Orca's SOL/USDC pool address
+	// TODO: get addresses from user input
 	whirlpoolAddress, err := solana.PublicKeyFromBase58("Czfq3xZZDmsdGdUyrNLtRhGc47cXcZtLG4crryfu44zE")
 	if err != nil {
 		log.Fatalf("failed to parse whirlpool address: %v", err)
 	}
-
-	balance := utils.GetSolBalance(ctx, whirlpoolAddress, rpcClient)
-	fmt.Println("whirlpool's balance:", balance, "SOL")
 
 	whirlpoolData := gorca.GetWhirlpoolData(rpcClient, whirlpoolAddress)
 
