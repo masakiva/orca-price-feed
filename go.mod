@@ -4,6 +4,7 @@ go 1.23.4
 
 require (
 	github.com/Norbaeocystin/gorca v1.0.18
+	github.com/gagliardetto/metaplex-go v0.2.1
 	github.com/gagliardetto/solana-go v1.8.2
 )
 

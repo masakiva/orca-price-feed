@@ -18,10 +18,16 @@ func main() {
 	fmt.Println("whirlpool's balance:", balance, "SOL")
 
 	whirlpoolData := gorca.GetWhirlpoolData(rpcClient, whirlpoolAddress)
-	fmt.Println("Token Vault A address:", whirlpoolData.TokenVaultA)
-	fmt.Println("Token Vault B address:", whirlpoolData.TokenVaultB)
-	vaultAAddress := solana.MustPublicKeyFromBase58(whirlpoolData.TokenVaultA.String())
-	vaultBAddress := solana.MustPublicKeyFromBase58(whirlpoolData.TokenVaultB.String())
-	fmt.Println("Token Vault A balance:", utils.GetSolBalance(vaultAAddress, rpcClient))
-	fmt.Println("Token Vault B balance:", utils.GetSolBalance(vaultBAddress, rpcClient))
+	vaultABalance := utils.GetPrettyTokenAccountBalance(
+		*whirlpoolData.TokenVaultA,
+		*whirlpoolData.TokenMintA,
+		rpcClient,
+	)
+	vaultBBalance := utils.GetPrettyTokenAccountBalance(
+		*whirlpoolData.TokenVaultB,
+		*whirlpoolData.TokenMintB,
+		rpcClient,
+	)
+	fmt.Println("Token Vault A balance:", vaultABalance)
+	fmt.Println("Token Vault B balance:", vaultBBalance)
 }
