@@ -14,7 +14,7 @@ import (
 
 // GetTokenAccountBalance retrieves and returns the balance of a specified
 // token account in its respective unit.
-func GetTokenAccountBalance(ctx context.Context, tokenAccountPubKey solana.PublicKey, rpcClient *rpc.Client) float64 {
+func GetTokenAccountBalance(ctx context.Context, tokenAccountPubKey solana.PublicKey, rpcClient *rpc.Client) (balance float64) {
 	balanceInfo, err := rpcClient.GetTokenAccountBalance(
 		ctx,
 		tokenAccountPubKey,
@@ -23,12 +23,12 @@ func GetTokenAccountBalance(ctx context.Context, tokenAccountPubKey solana.Publi
 	if err != nil {
 		log.Fatalf("failed to get token account balance: %v", err)
 	}
-	balanceFloat, err := strconv.ParseFloat(balanceInfo.Value.Amount, 64)
+	balance, err = strconv.ParseFloat(balanceInfo.Value.Amount, 64)
 	if err != nil {
 		log.Fatalf("failed to parse token account balance: %v", err)
 	}
-	balanceFloat /= math.Pow(10, float64(balanceInfo.Value.Decimals))
-	return balanceFloat
+	balance /= math.Pow(10, float64(balanceInfo.Value.Decimals))
+	return
 }
 
 func GetTokenSymbol(ctx context.Context, tokenMintPubKey solana.PublicKey, rpcClient *rpc.Client) string {
