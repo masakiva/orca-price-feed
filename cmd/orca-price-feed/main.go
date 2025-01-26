@@ -37,4 +37,9 @@ func main() {
 	)
 	price := new(big.Float).Mul(sqrtPrice, sqrtPrice)
 	fmt.Printf("Price computed from whirlpool's sqrtPrice: %s\n", price.Text('f', 8))
+
+	tickSpacing := whirlpoolData.TickSpacing
+	fmt.Printf("Tick spacing: %d\n", tickSpacing)
+	feeRate := whirlpoolData.FeeRate
+	fmt.Printf("Fee rate: %v\n", feeRate)
 }
