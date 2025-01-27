@@ -9,6 +9,7 @@ import (
 
 	token_metadata "github.com/gagliardetto/metaplex-go/clients/token-metadata"
 	"github.com/gagliardetto/solana-go"
+	"github.com/gagliardetto/solana-go/programs/token"
 	"github.com/gagliardetto/solana-go/rpc"
 )
 
@@ -29,6 +30,19 @@ func GetTokenAccountBalance(ctx context.Context, tokenAccountPubKey solana.Publi
 	}
 	balance /= math.Pow(10, float64(balanceInfo.Value.Decimals))
 	return
+}
+
+func GetTokenDecimals(ctx context.Context, tokenMintPubKey solana.PublicKey, rpcClient *rpc.Client) uint8 {
+	var mint token.Mint
+	err := rpcClient.GetAccountDataInto(
+		context.TODO(),
+		tokenMintPubKey,
+		&mint,
+	)
+	if err != nil {
+		log.Fatalf("failed to get mint account data: %v", err)
+	}
+	return mint.Decimals
 }
 
 func GetTokenSymbol(ctx context.Context, tokenMintPubKey solana.PublicKey, rpcClient *rpc.Client) string {

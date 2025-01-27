@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"math/big"
 
 	"github.com/Norbaeocystin/gorca"
 	"github.com/gagliardetto/solana-go"
@@ -27,17 +26,7 @@ func main() {
 	whirlpoolPrice := utils.GetWhirlpoolCurrentPrice(ctx, whirlpoolAddress, rpcClient)
 	fmt.Printf("Whirlpool price: %f\n", whirlpoolPrice)
 
-	// get price from whirlpool's sqrtPrice, for reference.
 	whirlpoolData := gorca.GetWhirlpoolData(rpcClient, whirlpoolAddress)
-	rawSqrtPrice := whirlpoolData.SqrtPrice.BigInt()
-	twoPow64 := new(big.Int).Exp(big.NewInt(2), big.NewInt(64), nil)
-	sqrtPrice := new(big.Float).Quo(
-		new(big.Float).SetInt(rawSqrtPrice),
-		new(big.Float).SetInt(twoPow64),
-	)
-	price := new(big.Float).Mul(sqrtPrice, sqrtPrice)
-	fmt.Printf("Price computed from whirlpool's sqrtPrice: %s\n", price.Text('f', 8))
-
 	tickSpacing := whirlpoolData.TickSpacing
 	fmt.Printf("Tick spacing: %d\n", tickSpacing)
 	feeRate := whirlpoolData.FeeRate
