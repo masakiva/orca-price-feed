@@ -36,11 +36,11 @@ func GetWhirlpoolData(client *rpc.Client, whirlpoolAddress solana.PublicKey) gor
 	return wpData
 }
 
-func GetWhirlpoolCurrentPrice(ctx context.Context, whirlpoolData gorca.WhirlpoolData, rpcClient *rpc.Client) float64 {
-	tokenADecimals := GetTokenDecimals(ctx, *whirlpoolData.TokenMintA, rpcClient)
-	tokenBDecimals := GetTokenDecimals(ctx, *whirlpoolData.TokenMintB, rpcClient)
+func GetPoolCurrentPrice(ctx context.Context, poolData gorca.WhirlpoolData, rpcClient *rpc.Client) float64 {
+	tokenADecimals := GetTokenDecimals(ctx, *poolData.TokenMintA, rpcClient)
+	tokenBDecimals := GetTokenDecimals(ctx, *poolData.TokenMintB, rpcClient)
 	return sqrtPriceToPrice(
-		whirlpoolData.SqrtPrice.BigInt(),
+		poolData.SqrtPrice.BigInt(),
 		tokenADecimals,
 		tokenBDecimals,
 	)
@@ -56,8 +56,8 @@ func sqrtPriceToPrice(sqrtPrice *big.Int, decimalsA uint8, decimalsB uint8) floa
 	return math.Pow(price, 2.0) * power
 }
 
-func GetSwapFee(whirlpoolPrice float64, feeRate uint16) float64 {
-	return whirlpoolPrice * float64(feeRate) / 1_000_000.0
+func GetSwapFee(poolPrice float64, feeRate uint16) float64 {
+	return poolPrice * float64(feeRate) / 1_000_000.0
 }
 
 //func GetWhirlpoolCurrentPrice(ctx context.Context, whirlpoolAddress solana.PublicKey, rpcClient *rpc.Client) float64 {

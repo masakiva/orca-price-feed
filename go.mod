@@ -7,6 +7,7 @@ require (
 	github.com/gagliardetto/binary v0.7.8
 	github.com/gagliardetto/metaplex-go v0.2.1
 	github.com/gagliardetto/solana-go v1.8.2
+	github.com/olekukonko/tablewriter v0.0.5
 )
 
 require (
@@ -25,6 +26,7 @@ require (
 	github.com/logrusorgru/aurora v2.0.3+incompatible // indirect
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-isatty v0.0.11 // indirect
+	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/mitchellh/go-testing-interface v1.14.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
