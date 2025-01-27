@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/Norbaeocystin/gorca"
 	"github.com/gagliardetto/solana-go"
 	"github.com/masakiva/orca-price-feed/internal/utils"
 )
@@ -22,13 +21,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to parse whirlpool address: %v", err)
 	}
+	whirlpoolData := utils.GetWhirlpoolData(rpcClient, whirlpoolAddress)
 
-	whirlpoolPrice := utils.GetWhirlpoolCurrentPrice(ctx, whirlpoolAddress, rpcClient)
+	whirlpoolPrice := utils.GetWhirlpoolCurrentPrice(ctx, whirlpoolData, rpcClient)
 	fmt.Printf("Whirlpool price: %f\n", whirlpoolPrice)
 
-	whirlpoolData := gorca.GetWhirlpoolData(rpcClient, whirlpoolAddress)
-	tickSpacing := whirlpoolData.TickSpacing
-	fmt.Printf("Tick spacing: %d\n", tickSpacing)
-	feeRate := whirlpoolData.FeeRate
-	fmt.Printf("Fee rate: %v\n", feeRate)
+	swapFee := utils.GetSwapFee(whirlpoolPrice, whirlpoolData.FeeRate)
+	fmt.Printf("Price without fees: %f\n", whirlpoolPrice-swapFee)
 }
