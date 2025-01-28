@@ -17,6 +17,6 @@ func main() {
 	for {
 		pools := utils.FetchAndUnmarshalPoolData(ctx, poolAddresses, rpcClient)
 		utils.PrintPoolTable(pools)
-		time.Sleep(10 * time.Second)
+		time.Sleep(5 * time.Second)
 	}
 }
