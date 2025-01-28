@@ -1,13 +1,17 @@
 ## Usage
 
-1. Ensure you have a Solana private key file. Update the path to your private key file in `main.go`.
+You can run the program by supplying the path to a file containing the
+addresses of the pools you want to fetch the prices for, on Solana mainnet-beta:
+```sh
+go run cmd/orca-price-feed/main.go <path-to-address-file>
+```
 
-2. Run the program:
+You can use this sample file for example:
+```sh
+go run cmd/orca-price-feed/main.go pool-addresses.txt
+```
 
-    ```sh
-    go run cmd/orca-price-feed/main.go
-    ```
-    or with a custom RPC URL:
-    ```sh
-    RPC_URL=https://api.mainnet-beta.solana.com go run cmd/orca-price-feed/main.go
-    ```
+You can also set the `RPC_URL` environment variable to specify a custom Solana RPC endpoint
+```sh
+RPC_URL=https://api.devnet.solana.com go run cmd/orca-price-feed/main.go <path-to-address-file>
+```
