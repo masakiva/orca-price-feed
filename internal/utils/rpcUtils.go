@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"log"
 	"net/url"
 	"os"
 
@@ -13,7 +14,7 @@ func GetRpcClient() *rpc.Client {
 	if endpointUrl != "" {
 		_, err := url.ParseRequestURI(endpointUrl)
 		if err != nil {
-			panic(err)
+			log.Fatalf("Failed to parse RPC_URL: %v", err)
 		}
 	} else {
 		fmt.Println("RPC_URL not defined, defaulting to Solana mainnet beta")

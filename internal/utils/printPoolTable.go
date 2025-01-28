@@ -7,7 +7,7 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-func PrintPoolTable(pools []Pool) {
+func PrintPoolTable(pool Pool, price float64, swapFee float64) {
 	// Create a new table writer instance
 	table := tablewriter.NewWriter(os.Stdout)
 
@@ -15,14 +15,12 @@ func PrintPoolTable(pools []Pool) {
 	table.SetHeader([]string{"Pool Address", "Token A", "Token B", "Current price without fees"})
 
 	// Append rows to the table
-	for _, pool := range pools {
-		table.Append([]string{
-			pool.PoolAddress,
-			pool.TokenASymbol,
-			pool.TokenBSymbol,
-			fmt.Sprintf("%.4f", pool.Price-pool.SwapFee), // Format price with 4 decimal places
-		})
-	}
+	table.Append([]string{
+		pool.PoolAddress.String(),
+		pool.TokenASymbol,
+		pool.TokenBSymbol,
+		fmt.Sprintf("%.4f", price-swapFee), // Format price with 4 decimal places
+	})
 
 	// Customize the table (optional)
 	table.SetBorder(true)                      // Enable borders

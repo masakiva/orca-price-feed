@@ -15,27 +15,34 @@ import (
 const Q64_RESOLUTION float64 = 18446744073709551616.0
 
 type Pool struct {
-	PoolAddress  string
-	TokenASymbol string
-	TokenBSymbol string
-	Price        float64
-	SwapFee      float64
+	PoolAddress    solana.PublicKey
+	TokenASymbol   string
+	TokenBSymbol   string
+	TokenADecimals uint8
+	TokenBDecimals uint8
+	FeeRate        uint16
 }
 
-func FetchAndUnmarshalPoolData(ctx context.Context, poolAddress string, rpcClient *rpc.Client) (pool Pool) {
+func FetchAndUnmarshalPoolData(ctx context.Context, poolAddress solana.PublicKey, rpcClient *rpc.Client) (pool Pool) {
 	poolData := GetWhirlpoolData(
 		rpcClient,
-		GetSolanaAddressFromString(poolAddress),
+		poolAddress,
 	)
-	poolPrice := GetPoolCurrentPrice(ctx, poolData, rpcClient)
 	pool = Pool{
-		PoolAddress:  poolAddress,
-		TokenASymbol: GetTokenSymbol(ctx, *poolData.TokenMintA, rpcClient),
-		TokenBSymbol: GetTokenSymbol(ctx, *poolData.TokenMintB, rpcClient),
-		Price:        poolPrice,
-		SwapFee:      GetSwapFee(poolPrice, poolData.FeeRate),
+		PoolAddress:    poolAddress,
+		TokenASymbol:   GetTokenSymbol(ctx, *poolData.TokenMintA, rpcClient), // TODO: get token mint data before
+		TokenBSymbol:   GetTokenSymbol(ctx, *poolData.TokenMintB, rpcClient),
+		TokenADecimals: GetTokenDecimals(ctx, *poolData.TokenMintA, rpcClient),
+		TokenBDecimals: GetTokenDecimals(ctx, *poolData.TokenMintB, rpcClient),
+		FeeRate:        poolData.FeeRate,
 	}
 	return
+}
+
+func CalculatePoolPriceAndFees(sqrtPrice bin.Uint128, poolData Pool) (float64, float64) {
+	price := GetPoolCurrentPrice(sqrtPrice, poolData)
+	fees := GetSwapFee(price, poolData.FeeRate)
+	return price, fees
 }
 
 // copied from gorca library, added proper error handling
@@ -52,21 +59,22 @@ func GetWhirlpoolData(client *rpc.Client, whirlpoolAddress solana.PublicKey) gor
 	if err != nil {
 		log.Fatalf("failed to get account info: %v", err)
 	}
-	var wpData gorca.WhirlpoolData
-	dataPos := account.GetBinary()
-	borshDec := bin.NewBorshDecoder(dataPos)
-	borshDec.Decode(&wpData)
-	// log.Println(wpData)
-	return wpData
+	poolData := DecodeWhirlpoolData(account.Value.Data)
+	return poolData
 }
 
-func GetPoolCurrentPrice(ctx context.Context, poolData gorca.WhirlpoolData, rpcClient *rpc.Client) float64 {
-	tokenADecimals := GetTokenDecimals(ctx, *poolData.TokenMintA, rpcClient)
-	tokenBDecimals := GetTokenDecimals(ctx, *poolData.TokenMintB, rpcClient)
+func DecodeWhirlpoolData(data *rpc.DataBytesOrJSON) (poolData gorca.WhirlpoolData) {
+	dataPos := data.GetBinary()
+	borshDec := bin.NewBorshDecoder(dataPos)
+	borshDec.Decode(&poolData)
+	return
+}
+
+func GetPoolCurrentPrice(sqrtPrice bin.Uint128, poolData Pool) float64 {
 	return sqrtPriceToPrice(
-		poolData.SqrtPrice.BigInt(),
-		tokenADecimals,
-		tokenBDecimals,
+		sqrtPrice.BigInt(),
+		poolData.TokenADecimals,
+		poolData.TokenBDecimals,
 	)
 }
 
