@@ -22,7 +22,7 @@ type Pool struct {
 	SwapFee      float64
 }
 
-func UnmarshalPoolData(ctx context.Context, poolAddresses []string, rpcClient *rpc.Client) (pools []Pool) {
+func FetchAndUnmarshalPoolData(ctx context.Context, poolAddresses []string, rpcClient *rpc.Client) (pools []Pool) {
 	for _, addressStr := range poolAddresses {
 		poolData := GetWhirlpoolData(
 			rpcClient,

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"time"
 
 	"github.com/masakiva/orca-price-feed/internal/utils"
 )
@@ -12,7 +13,10 @@ func main() {
 
 	ctx := context.Background()
 	rpcClient := utils.GetRpcClient()
-	pools := utils.UnmarshalPoolData(ctx, poolAddresses, rpcClient)
 
-	utils.PrintPoolTable(pools)
+	for {
+		pools := utils.FetchAndUnmarshalPoolData(ctx, poolAddresses, rpcClient)
+		utils.PrintPoolTable(pools)
+		time.Sleep(10 * time.Second)
+	}
 }
