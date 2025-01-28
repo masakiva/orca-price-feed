@@ -14,6 +14,33 @@ import (
 
 const Q64_RESOLUTION float64 = 18446744073709551616.0
 
+type Pool struct {
+	PoolAddress  string
+	TokenASymbol string
+	TokenBSymbol string
+	Price        float64
+	SwapFee      float64
+}
+
+func UnmarshalPoolData(ctx context.Context, poolAddresses []string, rpcClient *rpc.Client) (pools []Pool) {
+	for _, addressStr := range poolAddresses {
+		poolData := GetWhirlpoolData(
+			rpcClient,
+			GetSolanaAddressFromString(addressStr),
+		)
+		poolPrice := GetPoolCurrentPrice(ctx, poolData, rpcClient)
+		pool := Pool{
+			PoolAddress:  addressStr,
+			TokenASymbol: GetTokenSymbol(ctx, *poolData.TokenMintA, rpcClient),
+			TokenBSymbol: GetTokenSymbol(ctx, *poolData.TokenMintB, rpcClient),
+			Price:        poolPrice,
+			SwapFee:      GetSwapFee(poolPrice, poolData.FeeRate),
+		}
+		pools = append(pools, pool)
+	}
+	return
+}
+
 // copied from gorca library, added proper error handling
 func GetWhirlpoolData(client *rpc.Client, whirlpoolAddress solana.PublicKey) gorca.WhirlpoolData {
 	account, err := client.GetAccountInfoWithOpts(context.TODO(),
