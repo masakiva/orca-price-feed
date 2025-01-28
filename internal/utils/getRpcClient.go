@@ -16,8 +16,8 @@ func GetRpcClient() *rpc.Client {
 			panic(err)
 		}
 	} else {
-		fmt.Println("RPC_URL not defined, defaulting to Solana devnet")
-		endpointUrl = rpc.DevNet_RPC
+		fmt.Println("RPC_URL not defined, defaulting to Solana mainnet beta")
+		endpointUrl = rpc.MainNetBeta_RPC
 	}
 	return rpc.New(endpointUrl)
 }
