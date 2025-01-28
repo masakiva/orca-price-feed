@@ -1,3 +1,5 @@
+⚠ Still in development. Only the first address will be processed for now.
+
 ## Usage
 
 Run the program by supplying the path to a file containing the
