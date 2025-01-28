@@ -22,21 +22,18 @@ type Pool struct {
 	SwapFee      float64
 }
 
-func FetchAndUnmarshalPoolData(ctx context.Context, poolAddresses []string, rpcClient *rpc.Client) (pools []Pool) {
-	for _, addressStr := range poolAddresses {
-		poolData := GetWhirlpoolData(
-			rpcClient,
-			GetSolanaAddressFromString(addressStr),
-		)
-		poolPrice := GetPoolCurrentPrice(ctx, poolData, rpcClient)
-		pool := Pool{
-			PoolAddress:  addressStr,
-			TokenASymbol: GetTokenSymbol(ctx, *poolData.TokenMintA, rpcClient),
-			TokenBSymbol: GetTokenSymbol(ctx, *poolData.TokenMintB, rpcClient),
-			Price:        poolPrice,
-			SwapFee:      GetSwapFee(poolPrice, poolData.FeeRate),
-		}
-		pools = append(pools, pool)
+func FetchAndUnmarshalPoolData(ctx context.Context, poolAddress string, rpcClient *rpc.Client) (pool Pool) {
+	poolData := GetWhirlpoolData(
+		rpcClient,
+		GetSolanaAddressFromString(poolAddress),
+	)
+	poolPrice := GetPoolCurrentPrice(ctx, poolData, rpcClient)
+	pool = Pool{
+		PoolAddress:  poolAddress,
+		TokenASymbol: GetTokenSymbol(ctx, *poolData.TokenMintA, rpcClient),
+		TokenBSymbol: GetTokenSymbol(ctx, *poolData.TokenMintB, rpcClient),
+		Price:        poolPrice,
+		SwapFee:      GetSwapFee(poolPrice, poolData.FeeRate),
 	}
 	return
 }
